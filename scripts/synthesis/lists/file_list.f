@@ -1,0 +1,9 @@
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/memory_controller.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/sram_wrapper.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/cpu_pkg.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/risc_decode.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/alu.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/fetch.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/reg_file.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/cpu/cpu_top.sv
+/nethome/skanakala7/physical-design-onboarding-F26/inputs/rtl/src/verilog/chip_top.sv

@@ -1,0 +1,83 @@
+#!/usr/bin/env tcsh
+set _sjapr_dir = `dirname $0`
+setenv SCRIPTS `realpath $_sjapr_dir`
+setenv ROOT `realpath $SCRIPTS/..`
+setenv PREVDIR `pwd`
+setenv CDS_LIC_FILE 5280@ece-winlic.ece.gatech.edu
+
+# Batch by default, even if the calling shell has this set
+unsetenv SJ_INTERACTIVE
+
+set syn_command = "dc_shell-t -f ${SCRIPTS}/synthesis/synthesis.tcl -output_log_file synthesis.log"
+set apr_command = "innovus -log apr.log -init ${SCRIPTS}/apr/apr.tcl -legacy_ui -nowin"
+
+set syn_rundir = ${ROOT}/outputs/synthesis
+set apr_rundir = ${ROOT}/outputs/apr
+
+if ($#argv == 0) then
+	echo "Usage: SJapr <command> [flags]"
+	echo "Commands: syn[thesis], apr, flow"
+	echo "Flags:    -i | --interactive   queue steps and run them one at a time with sj_next_step"
+	exit 1
+endif
+
+set cmd = "$1"
+
+# Shift removes the first argument, so $1 becomes the next one (flags)
+shift
+
+foreach flag ($argv)
+	switch ($flag)
+		case "-i":
+		case "--interactive":
+			# config.tcl picks this up as $::config::INTERACTIVE; the tools
+			# then stay at their prompt with the step queue loaded
+			setenv SJ_INTERACTIVE 1
+			set apr_command = "innovus -log apr.log -init ${SCRIPTS}/apr/apr.tcl -legacy_ui"
+			breaksw
+		default:
+			echo "Error: Unknown flag '$flag'"
+			echo "Valid flags: -i | --interactive"
+			exit 1
+	endsw
+end
+
+switch ($cmd)
+	case "syn":
+	case "synth":
+	case "synthesis":
+		cat ${SCRIPTS}/helpers/LOGO.txt
+		${SCRIPTS}/helpers/rename_rundir.tcsh ${syn_rundir} synthesis.log
+		mkdir -p ${syn_rundir}/DBS ${syn_rundir}/RPT ${syn_rundir}/LOG
+		cd ${syn_rundir}
+		eval "$syn_command"
+		cd ${PREVDIR}
+		breaksw
+	case "apr":
+		cat ${SCRIPTS}/helpers/LOGO.txt
+		${SCRIPTS}/helpers/rename_rundir.tcsh ${apr_rundir} apr.log
+		mkdir -p ${apr_rundir}/DBS ${apr_rundir}/RPT ${apr_rundir}/LOG
+		cd ${apr_rundir}
+		eval "$apr_command"
+		cd ${PREVDIR}
+		breaksw
+	case "flow":
+		cat ${SCRIPTS}/helpers/LOGO.txt
+		${SCRIPTS}/helpers/rename_rundir.tcsh ${syn_rundir} synthesis.log
+		mkdir -p ${syn_rundir}/DBS ${syn_rundir}/RPT ${syn_rundir}/LOG
+		cd ${syn_rundir}
+		eval "$syn_command"
+		${SCRIPTS}/helpers/rename_rundir.tcsh ${apr_rundir} apr.log
+		mkdir -p ${apr_rundir}/DBS ${apr_rundir}/RPT ${apr_rundir}/LOG
+		cd ${apr_rundir}
+		puts "=============================="
+		puts "SJAPR INFO: BEGINNING APR FLOW"
+		puts "=============================="
+		eval "$apr_command"
+		cd ${PREVDIR}
+		breaksw
+	default:
+		echo "Error: Unknown command '$cmd'"
+		echo "Valid commands: syn[thesis], apr, flow"
+		exit 1
+endsw
