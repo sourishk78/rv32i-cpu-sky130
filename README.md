@@ -55,16 +55,25 @@ SystemVerilog, Synopsys Design Compiler (synthesis), Cadence Innovus (place and 
 [Fill in once your folder is organized, for example:]
 
 ```
-rtl/        SystemVerilog source
-tb/         self-checking testbenches
-docs/       test plan, diagrams, screenshots
-scripts/    Tcl flow scripts
-reports/    timing and area reports
+rtl/
+├── cpu/                          CPU core (alu, cpu_pkg, cpu_top, fetch, reg_file, risc_decode)
+├── CF_SRAM_1024x32.tt_180V_25C.v SRAM macro model
+├── chip_top.sv                   top level connecting the CPU and memories
+├── memory_controller.sv          arbitrates CPU and external access to the SRAMs
+└── sram_wrapper.sv               wrapper around the SRAM macro
+tb/                               self-checking testbench
+docs/                             test plan, diagrams, screenshots
+logs/                             simulation and assertion logs
+scripts/                          Tcl flow scripts
+reports/                          timing and area reports
 ```
 
 ## What I Learned
 
-- [One or two sentences, in your own words, such as: timing closure means finding the worst paths first, and verification keeps catching what a passing test misses.]
+- **RTL design:** writing synthesizable SystemVerilog for a decoder, ALU, register file, and control FSM, and thinking in terms of hardware and clock cycles instead of sequential code.
+- **Verification:** planning tests by failure mode (value boundaries, structural checks, history independence), writing self-checking tests, reading simulation logs, and using coverage and assertions to find what my tests were missing.
+- **Physical design:** running synthesis and place and route, working through timing closure across SS, TT, and FF corners, and using Virtuoso and Pegasus to clear DRC and LVS violations.
+- **The big picture:** how a design moves from RTL to GDS, and how a decision made at one stage, like how I wrote the RTL or constrained the clock, shows up later in timing and area.
 
 ## Author
 
