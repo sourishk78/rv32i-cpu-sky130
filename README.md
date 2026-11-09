@@ -52,7 +52,6 @@ SystemVerilog, Synopsys Design Compiler (synthesis), Cadence Innovus (place and 
 
 ## Repository Layout
 
-[Fill in once your folder is organized, for example:]
 
 ```
 rtl/
